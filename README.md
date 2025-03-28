@@ -1,6 +1,7 @@
-![image](https://github.com/user-attachments/assets/f14d7c46-d931-4943-aa42-523f0e52a5d8)# DIY-PU-Sensor
+xHow to make your own sensor compatible with LEGO(TM) Powered Up
 
-How to make your own sensor compatible with LEGO(TM) Powered Up
+[![Custom LEGO Powered Up Sensor Switch with MyOwnBricks and ESP32](http://img.youtube.com/vi/7tQd6HiykZE/0.jpg)](https://youtu.be/7tQd6HiykZE "Custom LEGO Powered Up Sensor Switch with MyOwnBricks and ESP32")
+
 
 ## Intro
 
