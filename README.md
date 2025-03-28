@@ -6,77 +6,91 @@ xHow to make your own sensor compatible with LEGO(TM) Powered Up
 ## Intro
 
 I like to use my LEGO(TM) electronic devices (mostly MINDSTORMS EV3) for purposes they were
-not intended to. The MINDSTORMS EV3, when running ev3dev linux, it's great for this since we can
-use it's USB for connecting an amazingly wide range of devices. But even the RJ12-like output and
-input ports can be used, with UART/I2C devices because LEGO docummented very well the device
-and ev3dev allows us to make full use of its internals.
+not intended to. The MINDSTORMS EV3, when running [ev3dev linux](https://www.ev3dev.org/),
+it's great for this since we can use it's USB for connecting an amazingly wide range of devices.
+But even the RJ12-like output and input ports can be used, with UART/I2C devices because LEGO(TM)
+docummented very well the device and ev3dev allows us to make full use of its internals.
 
-POwer Functions was also well docummented and we can use PF InfraRed and cables - some chinese
+Power Functions (PF) was also well docummented and we can use PF InfraRed and cables - some chinese
 companies are now selling things like fog/smoke generators and micromotors with PF connectors,
-filling a niche market that LEGO decided it wasn't interesting enough.
+filling a niche market that LEGO(TM) decided it wasn't interesting enough.
 
 Unfortunately the MINDSTORMS/Power Functions sucessor, Powered Up... well... you know what
 Shakespeare said, "Something is rotten in the state of Denmark".
 
-It doesn't matter. Powered UP hubs have mainly only one interface: the Powered Up port. And if
-we want we can use our own devices with them. Controlling simple devices (like DC motors or
+But it doesn't matter. Powered UP hubs have mainly only one interface: the Powered Up port. And if
+we want we can still use our own devices with them. Controlling simple devices (like DC motors or
 lasers of [smoke generators](https://ofalcao.pt/blog/2018/the-powered-up-smoke-engine)) is easy,
 because there are 2 pins available in the port specifically for that, like the old PF
 plug.
 
-But reading the state of a sensor is not so easy. There is just on input pin and it's not a
-General Purpose I/O pin that we can read it's state directly. It is the RX pin of a UARTthori
+But reading the state of a sensor is not so easy. There is just one input pin and it's not a
+General Purpose I/O pin that we can read it's state directly. It is the RX pin of a UART 
 (a serial interface). Except for the simple motor-like devices, all PU devices must use
 the UART pins (TX and RX) to interact with the PU Hub.
 
 So if you want to read the state of a switch you first need to crete a device that identifies
-as some sort of PU device through the UART and explains to the HUB what "methods" can be used
+as some sort of PU device through the UART and explains to the Hub what "methods" can be used
 and what kind of information is expected for each method.
 
 Fortunately, a few good folks have already made the worst part: understanding all the low-level
-part. So if you spend some time searching for it, you will find all the information
-needed to make your own LEGO(TM) PU compatible sensor.
+communication between the Hub and the devices. So if you spend some time searching for it, you
+will find all the information needed to make your own LEGO(TM) PU compatible sensor.
 
 I did it.
 
 But it was not straightful.
 
-SoI hope this helps.
+So I hope this helps other not having do reinvent the wheel again and again.
+
+
+## Acknowledgments
+
+Most of the information required for this guide was gathered from 3 sources:
+- [Ysard](https://github.com/ysard) [MyOwnBricks](https://github.com/ysard/MyOwnBricks)
+- [Philo's Home Page](https://www.philohome.com/)
+- The [Pybricks](https://pybricks.com/) project
+
+but since the initial WeDo 2.0 release (the first known member of the LEGO(TM) Powered Up
+family) many others have contributed with some sort of reverse engineering, hacking,
+trialing and coding... I am truly sorry for not being even able to give a name to
+some of them.
 
 
 ## Requirements
 
 Since you want to make your own sensor I will assume you know a little of electronics and
-have some sort of basic tools. If not... you are in the wrong place :)
+have some sort of basic Maker tools. If not... you are in the wrong place :)
 
-You need:
+You will need:
 - a PU cable with a male connector
 - some sort of microcontroller with a UART and a few GPIO pins
-- Arduino IDE
+- the Arduino IDE [on your computer]
+- [MyOwnBricks](https://github.com/ysard/MyOwnBricks) library with some modification
 
 ### PU cable with male connector
 
-There are several chinese-market stores that sell PU or WeDo 2 cables.
+There are several chinese-market stores that sell PU (WeDo 2) cables.
 
-LEGO(TM) also sells lots of PU cables if you don't mind cutting them (the LED lights
-being the less expensive) :)
+If you cannot order or wait, LEGO(TM) also sells lots of PU cables - if you don't mind cutting
+them (the LED lights being the less expensive) :)
 
 But LEGO(TM) also sells the SPIKE distance sensor, as far as I know it is the only
-LEGO(TM) PU device that you can easily open to access the 6 wires. It was even announced
+LEGO(TM) PU device that you can easily open to access the 6 PU wires. This was even announced
 as "a feature" but never saw any really use for it from LEGO(TM). Not even a pinout
-diagram.
+diagram :P
 
 I used a Torx T6 bit to open it:
 
 ![image](https://github.com/user-attachments/assets/ed9a3462-a43e-43a0-b38a-51f85beb29c7)
 
-There are 8 pins exposed but only 6 are connected to the cable wires:
+There are 8 contacts exposed but only 6 are connected to the cable wires:
 
 ![image](https://github.com/user-attachments/assets/9008839f-b42d-4a4b-883e-25ad3d140aec)
 
 From top to bottom:
-- Not used
-- Not used
+- Not connected
+- Not not connected
 - wire 1 (M1)
 - wire 2 (M2)
 - wire 3 (GND)
@@ -87,43 +101,67 @@ From top to bottom:
 ID1 and ID2 are the UART RX/TX - ID1 transports data from the Hub, ID2 transports data 
 to the Hub.
 
-If you don't have a SPIKE distance sensor you can solder some female headers to your
-stripped cable:
+If you don't have a SPIKE distance sensor you can solder some female headers (like those
+used in jumper cables) to your stripped cable:
 
 ![image](https://github.com/user-attachments/assets/88ad1bb1-5594-4e79-9e38-5cc2cd7a2e04)
 
 For the pinout reference please see [Philo's page](https://www.philohome.com/wedo2reverse/connect.htm)
 
+
 ### Microcontroller
 
 Nowadays I suppose all microcontrollers have at least one UART. But for this
-specific guide you need one compatible with Arduino IDE. But even so, there are
-a lot of flavours (or architectures) so if you don't want
-to edit a few .h and .cpp files to adapt the code to your own flavour you should
-get one of these:
+specific guide you need one board compatible with Arduino IDE (because MyOwnBricks
+is a Arduino library). And even so, there are a lot of flavours (or architectures) so if
+you don't want to edit a few .h and .cpp files to adapt the library to your own flavour
+you should get one of these:
 -  Atmega32u4 like the Arduino Pro-Micro
 -  ESP32 like the NodeMCU-ESP32 or the ES32-S3-Zero
 -  RP2040/RP2350 like the Raspberry Pi Pico
 
-I never used the Atmega. Here in Portugal they are not easy to find. But the author
+I never used the Atmega. Here in Portugal they are no longer easy to find. But the author
 of MyOwnBricks used it so if you want something bulletproof, it's your best option.
 
 The ESP32 boards are overkill - they have Wi-Fi, Bluetooth BLE and lots of GPIO pins,
 that will probably waste to much energy. But they are inexpensive and widely
-available and if you are a DIY you will probably already have one.
+available and if you are a Maker you will probably already have one.
 
-The RP2040/RP2350 are also inexpensive and are becoming widely available.
+The RP2040/RP2350 are also inexpensive and are becoming widely available, with many
+variants. I used the Raspberry Pi Pico 2 and intend to try a smaller variant as
+soon as it arrives.
 
-To keep things simple, choose a microcontroller board that works with 3V3 power
-supply. Some older boards require to be powered from 5V or USB and LEGO PU connector
+To keep things simple, choose a microcontroller board that works with 3V3 (3.3 Volt)
+power supply. Some older boards require to be powered from 5V or USB and LEGO PU connector
 only supplies 3.3 Volt so an extra power supply or some kind of voltage
 conversion circuit is needed.
 
 
 ### Arduino IDE
 
-We will use MyOnwBricks, a C++ library for Arduino. It's easy to install
-(I use Linux and didn't even installed, just running an AppImage).
+We will use MyOnwBricks, a C++ library for Arduino. So we need the [Arduino IDE](https://www.arduino.cc/en/software/).
+It's easy to install (I use Linux and didn't even installed it, I am just running
+an AppImage) but in Windows you might need to check documentation because of USB drivers
+or even security features.
+
+
+### MyOwnBricks library
+
+Currently (March 2025) version of [Ysard](https://github.com/ysard) [MyOwnBricks](https://github.com/ysard/MyOwnBricks)
+doesn't work out of the box with ESP32 or RP2040/2350.
+
+You can still install it (it's available in the Arduino IDE) and change a couple of lines or you can
+use [my fork](https://github.com/JorgePe/MyOwnBricks) until Ysard include my suggestions (or make his own
+changes, this is open source after all).
+
+I will later detail what is needed to be changed but essentially it is the definition of the Serial1
+device used in the Arduino convention (not all boards have the same number of internal UARTS
+so a program compiled for Atmega32u will have Serial1 mapped different than the same program compild
+for ESP32 or RP2040.
+
+I also added to my fork a custom sensor class (two files: CustomSensor.h and CustomSensor.cpp)
+and an example sketch (custom_sensor.ino) for reading the state of a switch (like a tactile button
+or a reed switch) connected to a GPIO pin of the microcontroller board.
 
 
 ### Programmng the microcontroller
@@ -133,14 +171,15 @@ a small button before connecting the USB cable to activate the bootloader.
 NodeMUC-ESP32 doesn't need it but ESP32-S3-Zero and the Raspberry Pi Pico 2 
 do need. Check your board documentation.
 
-When connected through USB to your computer please keep the VCC wire from
-the PU cable disconnected. The microcontroller will be powered from the 
+When connected through USB to your computer please keep the VCC wire (from
+the PU cable) disconnected. The microcontroller will be powered from the 
 USB cable and not all boards have internall protection circuits that
 allow connecting the 3V3 pin to another power source (i.e. the LEGO Hub).
 
-After compiling the example sketch 'custom_sensor.ino' and uploading it to
+After compiling your sketch  and uploading it to
 the microcontroller, if all tests look good you can remove the USB cable
 AND ONLY THEN connect the VCC wire from the PU cable.
+
 
 ## Assembling
 
@@ -169,9 +208,11 @@ Raspberry Pi Pico 2:
 TX = pin 1 (UART0 TX or GP0)
 RX = pin 2 (UART0 RX or GP1)
 
+
 ## Testing
 
-Using Pybricks with your LEGO(TM) Hub run this script:
+If using my example 'custom_sensor.ino' and my CustomSensor class, you can
+test it on your LEGO(TM) Hub running this Pybricks script:
 
 ```
 from pybricks.parameters import Port
@@ -187,3 +228,21 @@ print(myOwnSensor.info())
 You should get this output:
 
 {'id': 36, 'modes': (('MYOWNSWITCH', 1, 0),)}
+
+
+and you can read the value of 'MYOWNSWITCH' with
+
+```
+MyOwnSensor.read(0)
+```
+
+you will get 0 or 100 depending on the state of the GPIO
+pin you defined on your sketch:
+
+```
+#define SWITCH_GPIO 6
+```
+
+with this definition you will be using GPIO 6 (on a Raspberry Pi Pico
+this will be pin #9, on a ESP32 board it will be some other pin, check
+documentation)
