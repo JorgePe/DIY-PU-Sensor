@@ -191,14 +191,22 @@ just need to connect 4 wires from the cable to the microcontroller board:
 - wire 5 (ID1) to the microcontroller UART RX pin
 - wire 6 (ID2) to the microcontroller UART TX pin
 
-Some boards have more than one UART (ESP32 have 3) so we need to
-select the proper UART pins.
+Some boards have a 3V3 pin but it is not clear if it can be used for powering
+the board through it. Waveshare wiki page for the [ESP-S3-Zero](https://www.waveshare.com/wiki/ESP32-S3-Zero)
+even states it as 'Output' only and in FAQ section it says the board can only
+be pin-powered with 5V pin but I found better information and the 3V3 pin
+can be used for input power (but NOT when USB is also connected).
 
-On my version of the library, these are the pins used:
+Some boards have more than one UART (ESP32 have 3) so we need to check the
+documentation and select the proper TX/RX pins.
 
-NodeMCU-ESP32:
+On my version of the library, these are the pins I used:
+
+NodeMCU-ESP32*:
 - TX = GPIO 19
 - RX = GPIO 21
+
+*there are several models of this board
 
 ESP32-S3-Zero:
 - TX = GPIO 12
