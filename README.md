@@ -116,20 +116,22 @@ specific guide you need one board compatible with Arduino IDE (because MyOwnBric
 is a Arduino library). And even so, there are a lot of flavours (or architectures) so if
 you don't want to edit a few .h and .cpp files to adapt the library to your own flavour
 you should get one of these:
--  Atmega32u4 like the Arduino Pro-Micro
--  ESP32 like the NodeMCU-ESP32 or the ES32-S3-Zero
--  RP2040/RP2350 like the Raspberry Pi Pico
+-  Atmega32u4 like the [Arduino Pro-Micro](https://docs.arduino.cc/hardware/micro/)
+-  ESP32 like the [Joy-IT NodeMCU-ESP32](https://joy-it.net/en/products/SBC-NodeMCU-ESP32)
+or the [Waveshare ES32-S3-Zero](https://www.waveshare.com/wiki/ESP32-S3-Zero)
+-  RP2040/RP2350 like the [Raspberry Pi Pico](https://www.raspberrypi.com/documentation/microcontrollers/pico-series.html)
+or the [Seed Studio XIAO RP2040](https://wiki.seeedstudio.com/XIAO-RP2040/)
 
-I never used the Atmega. Here in Portugal they are no longer easy to find. But the author
-of MyOwnBricks used it so if you want something bulletproof, it's your best option.
+I never used the Arduino Pro-Micro. Here in Portugal they are no longer easy to find, but
+the author of MyOwnBricks used it so if you want something bulletproof, it's your best option.
 
 The ESP32 boards are overkill - they have Wi-Fi, Bluetooth BLE and lots of GPIO pins,
 that will probably waste to much energy. But they are inexpensive and widely
 available and if you are a Maker you will probably already have one.
 
 The RP2040/RP2350 are also inexpensive and are becoming widely available, with many
-variants. I used the Raspberry Pi Pico 2 and intend to try a smaller variant as
-soon as it arrives.
+variants. I used the Raspberry Pi Pico 2 and the XIAO RP2040 (a smaller and slightly
+cheaper).
 
 To keep things simple, choose a microcontroller board that works with 3V3 (3.3 Volt)
 power supply. Some older boards require to be powered from 5V or USB and LEGO PU connector
@@ -200,21 +202,27 @@ can be used for input power (but NOT when USB is also connected).
 Some boards have more than one UART (ESP32 have 3) so we need to check the
 documentation and select the proper TX/RX pins.
 
-On my version of the library, these are the pins I used:
+On my version of the library, these are the pins I used - where pin 'n' is
+the number of the physical pin and not any internal reference (so pin 1
+is the pin in the upper left corner and you count counterclockwise)
 
 NodeMCU-ESP32*:
 - TX = GPIO 19
 - RX = GPIO 21
 
-*there are several models of this board
+*there are several models of this board so I don't name the physical pins
 
 ESP32-S3-Zero:
-- TX = GPIO 12
-- RX = GPIO 13
+- TX = pin 15 (GPIO 12)
+- RX = pin 16 (GPIO 13)
 
 Raspberry Pi Pico 2:
-TX = pin 1 (UART0 TX or GP0)
-RX = pin 2 (UART0 RX or GP1)
+- TX = pin 1 (UART0 TX or GP0)
+- RX = pin 2 (UART0 RX or GP1)
+
+XIAO 2040:
+- TX = pin 7 (P0 or D6)
+- RX = pin 8 (P1 or D7)
 
 
 ## Testing
