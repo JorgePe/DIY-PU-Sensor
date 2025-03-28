@@ -155,8 +155,8 @@ use [my fork](https://github.com/JorgePe/MyOwnBricks) until Ysard include my sug
 changes, this is open source after all).
 
 I will later detail what is needed to be changed but essentially it is the definition of the Serial1
-device used in the Arduino convention (not all boards have the same number of internal UARTS
-so a program compiled for Atmega32u will have Serial1 mapped different than the same program compild
+device used in the Arduino convention (not all boards have the same number of internal UART's
+so a program compiled for Atmega32u will have Serial1 mapped different than the same program compiled
 for ESP32 or RP2040.
 
 I also added to my fork a custom sensor class (two files: CustomSensor.h and CustomSensor.cpp)
@@ -186,17 +186,17 @@ AND ONLY THEN connect the VCC wire from the PU cable.
 If you have a proper PU cable with a male plug and a microcontroller board you
 just need to connect 4 wires from the cable to the microcontroller board:
 
-wire 3 (GND) to a microcontroller GND pin 
-wire 4 (VCC) to a microcontroller 3V3 pin (not while using USB)
-wire 5 (ID1) to the microcontroller UART RX pin
-wire 6 (ID2) to the microcontroller UART TX pin
+- wire 3 (GND) to a microcontroller GND pin 
+- wire 4 (VCC) to a microcontroller 3V3 pin (not while using USB)
+- wire 5 (ID1) to the microcontroller UART RX pin
+- wire 6 (ID2) to the microcontroller UART TX pin
 
 Some boards have more than one UART (ESP32 have 3) so we need to
 select the proper UART pins.
 
 On my version of the library, these are the pins used:
 
-NodeMCU-ESP32
+NodeMCU-ESP32:
 - TX = GPIO 19
 - RX = GPIO 21
 
