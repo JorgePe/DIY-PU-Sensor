@@ -280,3 +280,14 @@ pin you defined on your sketch:
 with this definition you will be using GPIO 6 (on a Raspberry Pi Pico
 this will be pin #9, on a ESP32 board it will be some other pin, check
 documentation)
+
+## Creating your own sensor class
+
+(soon)
+
+## Videos
+
+A Magnetic Switch using Seeed Studio XIAO RP2040 and a Reed Switch (6x6x2 size)
+[![LEGO Powered Up Magnetic Switch](http://img.youtube.com/vi/Isp6hJqA5-c/0.jpg)](https://youtu.be/Isp6hJqA5-c "LEGO Powered Up Magnetic Switch")
+
+(a question about this kind of switch made me start this guide - thanks @DanielDumene-j7f)
