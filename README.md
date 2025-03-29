@@ -218,14 +218,17 @@ Some boards have more than one UART (ESP32 have 3) so we need to check the
 documentation and select the proper TX/RX pins.
 
 On my version of the library, these are the pins I used - where pin 'n' is
-the number of the physical pin and not any internal reference (so pin 1
-is the pin in the upper left corner and you count counterclockwise)
+the number of the physical pin and not any internal reference (so if you look
+to your board with the USB connector pointing upward, pin 1 is in the upper left
+corner and you then count pins counterclockwise)
 
 NodeMCU-ESP32*:
-- TX = GPIO 19
-- RX = GPIO 21
+- TX = pin 10 (GPIO 19 or D19)
+- RX = pin 11 (GPIO 21 or D21)
 
-*there are several models of this board so I don't name the physical pins
+*there are several models of this board, mine is a 30-pin version from
+Joy-IT that seems to  follow the ESP32 DevKit V1 development board like shown
+[here](https://lastminuteengineers.com/esp32-pinout-reference/).
 
 ESP32-S3-Zero:
 - TX = pin 15 (GPIO 12)
