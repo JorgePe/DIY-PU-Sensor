@@ -68,6 +68,7 @@ You will need:
 - the Arduino IDE [on your computer]
 - [MyOwnBricks](https://github.com/ysard/MyOwnBricks) library with some modification
 
+
 ### PU cable with male connector
 
 There are several chinese-market stores that sell PU (WeDo 2) cables.
@@ -137,6 +138,20 @@ To keep things simple, choose a microcontroller board that works with 3V3 (3.3 V
 power supply. Some older boards require to be powered from 5V or USB and LEGO PU connector
 only supplies 3.3 Volt so an extra power supply or some kind of voltage
 conversion circuit is needed.
+
+If power consumption is a concern, I ran a basic test with Pybricks hub.battery.current():
+
+- Seeed Studio XIAO 2040 - Min: 88 Max: 95 Avg: 90.3
+- Waveshare ESP32-S3-Zero - Min: 103 Max: 111 Avg: 104.7
+- Raspberry Pi Pico 2 - Min: 76 Max: 81 Avg: 78.1
+- Joy-IT NodeMCU-ESP32 - Min: 108 Max: 116 Avg: 111.3
+
+so the Raspberry Pi Pico 2 seems the less demanding (but all microcontrollers have some sort
+of power reduction methods that can be used to achieve better results)
+
+(the test was run in a Technic Hub with my custom sensor connected to Port A and a motor connected
+to Port B, with a 100 ms delay between each reading of the sensor and the battery; the Technic Hub
+was also connected to my laptop through a BT-BLE session with my Chrome Pybricks IDE)
 
 
 ### Arduino IDE
