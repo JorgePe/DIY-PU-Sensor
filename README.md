@@ -287,7 +287,8 @@ documentation)
 
 ## Videos
 
-A Magnetic Switch using Seeed Studio XIAO RP2040 and a Reed Switch (6x6x2 size)
-[![LEGO Powered Up Magnetic Switch](http://img.youtube.com/vi/Isp6hJqA5-c/0.jpg)](https://youtu.be/Isp6hJqA5-c "LEGO Powered Up Magnetic Switch")
+A Magnetic Switch using Seeed Studio XIAO RP2040 and a Reed Switch (6x6x2 size):
+
+[![LEGO Powered Up Magnetic Switch](http://img.youtube.com/vi/0zyLq8EPQnA/0.jpg)](https://youtu.be/0zyLq8EPQnA "LEGO Powered Up Magnetic Switch")
 
 (a question about this kind of switch made me start this guide - thanks @DanielDumene-j7f)
