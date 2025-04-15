@@ -1,4 +1,4 @@
-xHow to make your own sensor compatible with LEGO(TM) Powered Up
+How to make your own sensor compatible with LEGO(TM) Powered Up
 
 [![Custom LEGO Powered Up Sensor Switch with MyOwnBricks and ESP32](http://img.youtube.com/vi/7tQd6HiykZE/0.jpg)](https://youtu.be/7tQd6HiykZE "Custom LEGO Powered Up Sensor Switch with MyOwnBricks and ESP32")
 
@@ -43,7 +43,9 @@ But it was not straightful.
 
 So I hope this helps other not having do reinvent the wheel again and again.
 
-Now with an extra feature: you can also send data to your DIY PU device (still in testing)
+Now with an extra feature: you can also send data to your DIY PU device (still in tests):
+
+[![Custom LEGO Powered Up output device](http://img.youtube.com/vi/DNjR3Qo968k/0.jpg)](https://youtu.be/DNjR3Qo968k "Custom LEGO Powered Up output device")
 
 ## Acknowledgments
 
