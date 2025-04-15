@@ -43,6 +43,7 @@ But it was not straightful.
 
 So I hope this helps other not having do reinvent the wheel again and again.
 
+Now with an extra feature: you can also send data to your DIY PU device (still in testing)
 
 ## Acknowledgments
 
