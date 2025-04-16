@@ -18,11 +18,12 @@ filling a niche market that LEGO(TM) decided it wasn't interesting enough.
 Unfortunately the MINDSTORMS/Power Functions sucessor, Powered Up... well... you know what
 Shakespeare said, "Something is rotten in the state of Denmark".
 
-But it doesn't matter. Powered UP hubs have mainly only one interface: the Powered Up port. And if
+But it doesn't matter. Powered UP hubs have mainly only one interface: the Powered Up (PU) port. And if
 we want we can still use our own devices with them. Controlling simple devices (like DC motors or
 lasers of [smoke generators](https://ofalcao.pt/blog/2018/the-powered-up-smoke-engine)) is easy,
 because there are 2 pins available in the port specifically for that, like the old PF
-plug.
+plug. Although controlling something more refined, like a LED Array, requires sweating a lot more
+[but I'm working on that].
 
 But reading the state of a sensor is not so easy. There is just one input pin and it's not a
 General Purpose I/O pin that we can read it's state directly. It is the RX pin of a UART 
@@ -41,7 +42,7 @@ I did it.
 
 But it was not straightful.
 
-So I hope this helps other not having do reinvent the wheel again and again.
+So I hope this helps other not having to reinvent the wheel again and again.
 
 Now with an extra feature: you can also send data to your DIY PU device (still in tests):
 
@@ -134,7 +135,7 @@ that will probably waste to much energy. But they are inexpensive and widely
 available and if you are a Maker you will probably already have one.
 
 The RP2040/RP2350 are also inexpensive and are becoming widely available, with many
-variants. I used the Raspberry Pi Pico 2 and the XIAO RP2040 (a smaller and slightly
+variants. I used the Raspberry Pi Pico 2 and the XIAO RP2040 (smaller and slightly
 cheaper).
 
 To keep things simple, choose a microcontroller board that works with 3V3 (3.3 Volt)
@@ -295,3 +296,53 @@ A Magnetic Switch using Seeed Studio XIAO RP2040 and a Reed Switch (6x6x2 size):
 [![LEGO Powered Up Magnetic Switch](http://img.youtube.com/vi/0zyLq8EPQnA/0.jpg)](https://youtu.be/0zyLq8EPQnA "LEGO Powered Up Magnetic Switch")
 
 (a question about this kind of switch made me start this guide - thanks @DanielDumene-j7f)
+
+## Work in progress
+
+Started a new jib recently so almost no spare time but at the moment  I'm working in:
+- adding more detailed explanations
+- sending data from the PU Hub to the microcontroller
+- learning C++ (for the microcontrollers) while still practicing python (with ev3dev and Pybricks)...
+  without melting my brain with the differences between those 2 languages
+
+### Sending data
+
+So, controling a simple motor or a laser or anything that just requires some voltage/current is already
+possible: emulate a LEGO PU Train Motor (see [Philo's details](https://www.philohome.com/wedo2reverse/connect.htm))
+and user DC Motor control to apply a PWM voltage to the M1/M2 pins.
+
+Controling an external circuit is slightly more difficult, you will need something like a
+transistor or a relay that switches the external circuit ON when you apply voltage to M1/M2 pins.
+
+Some other devices can also be controlled with some electronics. For instance to control a RC servo
+(like those used with Arduino) you can use an analog input pin from a microcontroller, measure
+the average voltage on pins M1/M2 and control the RC servo with with a timing proportional to that
+value.
+
+But if you are already using a microcontroller, you can receive data directly from the TX pin of
+the PU port.
+
+So we can extend the Custom Sensor class to receive data from the PU Hub.
+
+Essentially:
+- modify the initialization sequence to announce not just input fewatures but also output;
+- listen to Write commands from the Hub directed to the Mode you defined as Output compatible
+- extract the data sent in that Write command and store it in a new class variable
+
+If you look into my fork of MyOwnBricks, there is already an example sketch that can be used
+(custom_sensor_output). It receives one signed 8-bit integer from the Hub and controls 3
+LEDs and a RC micro servo according to the value.
+
+To use it from Pybricks you use PUPDevice class like in the Custom Sensor and write
+a tuple of 1 value to mode 0:
+
+```
+from pybricks.parameters import Port
+from pybricks.iodevices import PUPDevice
+
+custom = PUPDevice(Port.A)
+custom.write(0, (4,))
+```
+
+this will send '4' to the custom device, if using my example sketch it will turn the 3
+LEDS ON.
