@@ -322,7 +322,8 @@ INFO_SI        information on the scaled data value for a mode
 INFO_MAPPING   information on mode mapping
 INFO_UNITS     information on the units of measurement for a mode
 
-(since we only announce one mode, this group of 7 messages will happen only once)
+(since we only announce one mode, this group of 7 messages will happen only once in
+the initialization phase)
 
 
 ### CMD_TYPE - the Device ID
@@ -399,7 +400,7 @@ I copied one command that worked (setting ABS flag for input and no flags for ou
 since a pure sensor do not require output)
 
 ```
-SerialTTL.write("\x88\x05\x10\x10\x72", 5); 
+SerialTTL.write("\x88\x05\x10\x00\x62", 5); 
 ```
 
 MESSAGE_INFO | LENGTH_2 | MODE_<m>, INFO_MAPPING [| INFO_MODE_PLUS_8], <input>, <output>, <checksum>
@@ -412,6 +413,11 @@ INFO_MODE_PLUS_8 is not used here
 00h = output flags (no flag set)
 72h = checksum
 
+When extending your device for output mode, also set ABS flag on onput:
+
+```
+SerialTTL.write("\x88\x05\x10\x10\x72", 5); 
+```
 
 ### INFO_UNITS - the values
 
