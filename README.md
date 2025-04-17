@@ -308,25 +308,29 @@ if the device supports it.
 
 First the basic information about the device itself:
 
-CMD_TYPE       inform the Device ID (36)
-CMD_MODES      inform to have one mode (so Mode 0)
-CMD_SPEED      inform to be able to speak at 115200 bps
-CMD_VERSION    inform to have fw-version: 1.0.0.0, hw-version: 1.0.0.0
+- CMD_TYPE       inform the Device ID (36)
+- CMD_MODES      inform to have one mode (so Mode 0)
+- CMD_SPEED      inform to be able to speak at 115200 bps
+- CMD_VERSION    inform to have fw-version: 1.0.0.0, hw-version: 1.0.0.0
 
-Then for each mode:
+Then a group of messages describing each mode:
 
-INFO_NAME      information about the name of each mode
-INFO_RAW       information about the scaling of the raw sensor value for a mode
-INFO_PCT       information on scaling the sensor value for a mode to a percentage
-INFO_SI        information on the scaled data value for a mode
-INFO_MAPPING   information on mode mapping
-INFO_UNITS     information on the units of measurement for a mode
+- INFO_NAME      information about the name of each mode
+- INFO_RAW       information about the scaling of the raw sensor value for a mode
+- INFO_PCT       information on scaling the sensor value for a mode to a percentage
+- INFO_SI        information on the scaled data value for a mode
+- INFO_MAPPING   information on mode mapping
+- INFO_UNITS     information on the units of measurement for a mode
 
 (since we only announce one mode, this group of 7 messages will happen only once in
 the initialization phase)
 
 
 ### CMD_TYPE - the Device ID
+
+```
+MESSAGE_CMD | LENGTH_1 | CMD_TYPE, <type-id>, <checksum>
+```
 
 Each Powered Up device has a
 [Device Identifier number](https://docs.pybricks.com/en/latest/iodevices/pupdevice.html).
@@ -340,11 +344,9 @@ in a [CMD_TYPE]() message:
 SerialTTL.write("\x40\x24\x9B", 3);
 ```
 
-MESSAGE_CMD | LENGTH_1 | CMD_TYPE, <type-id>, <checksum>
-
-40h = MESSAGE_CMD (40) | LENGTH_1 (00) | CMD_TYPE (00) 
-24h = 36d
-98 = the checksum of the whole message = FFh XOR 40h XOR 24h
+- 40h = MESSAGE_CMD (40) | LENGTH_1 (00) | CMD_TYPE (00)
+- 24h = 36d
+- 98 = the checksum of the whole message = FFh XOR 40h XOR 24h
 
 So if you want to use another Device Id you need to change the second byte of this
 command and recalculate the cheksum.
@@ -354,6 +356,10 @@ while instanciating the object)
 
 ### CMD_MODES - the number of modes and views
 
+```
+MESSAGE_CMD | LENGTH_<n> | CMD_MODES, <modes>, [<views>, [<modes2>, <views2>,]] <checksum>
+```
+
 For now, we are happy with just one mode and one view so we just need
 2 bytes to say that (1 for <modes>, 1 for <views>, see below)
 
@@ -361,15 +367,17 @@ For now, we are happy with just one mode and one view so we just need
 SerialTTL.write("\x49\x00\x00\xB6", 4);
 ```
 
-MESSAGE_CMD | LENGTH_<n> | CMD_MODES, <modes>, [<views>, [<modes2>, <views2>,]] <checksum>
-
-49h = MESSAGE_CMD (40) | LENGHT_2 (08) | CMD_MODES (01)
-00h = 1 mode (minus 1)
-00h = 1 view (minus 1)
-B6H = checksum
+- 49h = MESSAGE_CMD (40) | LENGHT_2 (08) | CMD_MODES (01)
+- 00h = 1 mode (minus 1)
+- 00h = 1 view (minus 1)
+- B6H = checksum
 
 
 ### INFO_NAME - the Mode Name
+
+```
+MESSAGE_INFO | LENGTH_<n> | MODE_<m>, INFO_NAME [| INFO_MODE_PLUS_8], <name>, <checksum>
+```
 
 During the initialization sequence the device announces a description of each
 of the modes it implements (currently implementing just one mode, so Mode 0).
@@ -380,20 +388,23 @@ Each mode has a name, I'm using "MYOWNSWITCH" for Mode 0:
 SerialTTL.write("\xA0\x00\x4D\x59\x4F\x57\x4E\x53\x57\x49\x54\x43\x48\x00\x00\x00\x00\x00\x0F", 19);
 ```
 
-MESSAGE_INFO | LENGTH_<n> | MODE_<m>, INFO_NAME [| INFO_MODE_PLUS_8], <name>, <checksum>
 
 Since "MYOWNSWITCH" has 11 chars it requires a whole LENGHT_16 slot and the extra 5 chars will be
 padded with zeros ('\x00')
 
 INFO_MODE_PLUS_8 is not used here
 
-A0h = MESSAGE_INFO (80) | LENGHT_16 (20) | MODE_0 (00)
-00h = INFO_NAME (00)
-4D 59 4F 57 4E 53 57 49 54 43 48 = ASCII representation of "MYOWNSWITCH"
-0Fh = checksum
+- A0h = MESSAGE_INFO (80) | LENGHT_16 (20) | MODE_0 (00)
+- 00h = INFO_NAME (00)
+- 4D 59 4F 57 4E 53 57 49 54 43 48 = ASCII representation of "MYOWNSWITCH"
+- 0Fh = checksum
 
 
 ### INFO_MAPPING - input and output flags
+
+```
+MESSAGE_INFO | LENGTH_2 | MODE_<m>, INFO_MAPPING [| INFO_MODE_PLUS_8], <input>, <output>, <checksum>
+```
 
 To be honest, I don't fully understand this command. It sets input and output flags,
 I copied one command that worked (setting ABS flag for input and no flags for output
@@ -402,8 +413,6 @@ since a pure sensor do not require output)
 ```
 SerialTTL.write("\x88\x05\x10\x00\x62", 5); 
 ```
-
-MESSAGE_INFO | LENGTH_2 | MODE_<m>, INFO_MAPPING [| INFO_MODE_PLUS_8], <input>, <output>, <checksum>
 
 INFO_MODE_PLUS_8 is not used here
 
@@ -421,6 +430,10 @@ SerialTTL.write("\x88\x05\x10\x10\x72", 5);
 
 ### INFO_UNITS - the values
 
+```
+MESSAGE_INFO | LENGTH_4 | MODE_<m>, INFO_FORMAT [| INFO_MODE_PLUS_8], <data-sets>, <format>, <figures>, <decimals>, <checksum>
+```
+
 The most simple value we can send/receive is a signed 8-bytes integer (DATA8)
 It can represent a value from -128 to 127 so up to 3 figures without decimals
 
@@ -428,17 +441,15 @@ It can represent a value from -128 to 127 so up to 3 figures without decimals
 SerialTTL.write("\x90\x80\x01\x00\x03\x00\xED", 7);
 ```
 
-MESSAGE_INFO | LENGTH_4 | MODE_<m>, INFO_FORMAT [| INFO_MODE_PLUS_8], <data-sets>, <format>, <figures>, <decimals>, <checksum>
-
 INFO_MODE_PLUS_8 is not used here
 
-90h = MESSAGE_INFO (80) | LENGTH_4 (10) | MODE_0 (00)
-80h = INFO_FORMAT (80)
-01h = 1 data-set (01)
-00h = DATA8 format (00)
-03h = 3 figures (03)
-00h = 0 decimals (00)
-EDh = checksum
+- 90h = MESSAGE_INFO (80) | LENGTH_4 (10) | MODE_0 (00)
+- 80h = INFO_FORMAT (80)
+- 01h = 1 data-set (01)
+- 00h = DATA8 format (00)
+- 03h = 3 figures (03)
+- 00h = 0 decimals (00)
+- EDh = checksum
 
 
 (/still working on this)
