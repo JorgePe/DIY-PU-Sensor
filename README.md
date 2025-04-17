@@ -399,6 +399,11 @@ INFO_MODE_PLUS_8 is not used here
 - 4D 59 4F 57 4E 53 57 49 54 43 48 = ASCII representation of "MYOWNSWITCH"
 - 0Fh = checksum
 
+### INFO_RAW / INFO_PCT / INFO_SI
+
+According to Pybricks documentation these 3 messages are optional. I just copied
+these commands from MyOwnBricks emulation of the TiltSensor and it worked.
+
 
 ### INFO_MAPPING - input and output flags
 
@@ -406,9 +411,9 @@ INFO_MODE_PLUS_8 is not used here
 MESSAGE_INFO | LENGTH_2 | MODE_<m>, INFO_MAPPING [| INFO_MODE_PLUS_8], <input>, <output>, <checksum>
 ```
 
-To be honest, I don't fully understand this command. It sets input and output flags,
-I copied one command that worked (setting ABS flag for input and no flags for output
-since a pure sensor do not require output)
+This command sets some input and output flags. To be honest, I don't fully understand
+the meaning of those flagas, just copied a value that worked (setting ABS flag for
+input and no flags for output since a pure sensor do not require output)
 
 ```
 SerialTTL.write("\x88\x05\x10\x00\x62", 5); 
