@@ -287,7 +287,56 @@ documentation)
 
 ## Creating your own sensor class
 
-(soon)
+(still working on this)
+
+This is not easy yet. Sorry but currently you'll have to understand a bit of C++
+and have some experience with Arduino-like projects.
+
+You will need to modify the CustomSensor class according to your needs. So you also
+need to read this unvaluable description of the
+[https://github.com/pybricks/technical-info](LEGO Powered Up UART Protocol) written
+by the Pybricks project.
+
+Probably you just need to modify the number and type of parameters that you want to
+pass to/from your device so I'll begin by only explaining this. For more elaborated
+devices you might want to add extra modes, that will take more time.
+
+### The Device ID and Name
+
+Each Powered Up device has a
+[Device Identifier number](https://docs.pybricks.com/en/latest/iodevices/pupdevice.html).
+For instance the first PU motor, from the Wedo 2.0 set, announces itself with ID "1".
+
+Currently I'm using "36" for my Custom Sensor (because apparently there is no official LEGO
+device using it). It is "hard coded" right in the beginning of the Initialization Sequence
+in a [CMD_TYPE]() message:
+
+```
+SerialTTL.write("\x40\x24\x9B", 3);
+```
+
+MESSAGE_CMD | LENGTH_1 | CMD_TYPE, <type-id>, <checksum>
+
+40h = MESSAGE_CMD (40) | LENGTH_1 (00) | CMD_TYPE (00) 
+24h = 36d
+98 = the checksum of the whole message = FFh XOR 40h XOR 24h
+
+So if you want to use another Device Id you need to change the second byte of this
+command and recalculate the cheksum.
+
+(I plan to change the class definition to allow changing it
+while instanciating the object)
+
+
+### The Mode Nema definition
+
+... INFO_NAME ...
+
+### The values definition
+
+... INFO_SI ...
+
+(/still working on this)
 
 ## Videos
 
@@ -299,7 +348,7 @@ A Magnetic Switch using Seeed Studio XIAO RP2040 and a Reed Switch (6x6x2 size):
 
 ## Work in progress
 
-Started a new jib recently so almost no spare time but at the moment  I'm working in:
+Started a new job recently so almost no spare time but at the moment  I'm working in:
 - adding more detailed explanations
 - sending data from the PU Hub to the microcontroller
 - learning C++ (for the microcontrollers) while still practicing python (with ev3dev and Pybricks)...
