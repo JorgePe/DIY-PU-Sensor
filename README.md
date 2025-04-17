@@ -338,7 +338,7 @@ For instance the first PU motor, from the Wedo 2.0 set, announces itself with ID
 
 Currently I'm using "36" for my Custom Sensor (because apparently there is no official LEGO
 device using it). It is "hard coded" right in the beginning of the Initialization Sequence
-in a [CMD_TYPE]() message:
+in a CMD_TYPE message:
 
 ```
 SerialTTL.write("\x40\x24\x9B", 3);
